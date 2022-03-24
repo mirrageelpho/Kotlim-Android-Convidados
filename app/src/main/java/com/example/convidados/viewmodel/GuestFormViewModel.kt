@@ -10,7 +10,7 @@ import com.example.convidados.service.repository.GuestRepository
 
 class GuestFormViewModel(application: Application): AndroidViewModel(application) { //Passo uma parametro do tipo Application no construtor para ter um contexto
     private val mContext = application.applicationContext //Acesso o contexto através do application context
-    private val mGuestRepository: GuestRepository = GuestRepository.getInstance(mContext) //passo o contexto para o getInstance
+    private val mGuestRepository: GuestRepository = GuestRepository(mContext) //passo o contexto para o getInstance
     private var mSaveGuest = MutableLiveData<Boolean>()
 
     var SaveGuest: LiveData<Boolean> = mSaveGuest
@@ -19,7 +19,11 @@ class GuestFormViewModel(application: Application): AndroidViewModel(application
     var guest: LiveData<GuestModel> = mGuest
 
     fun save(id: Int, name: String, presence: Boolean) {
-        val guest = GuestModel(id,  name, presence)
+        val guest = GuestModel().apply {
+            this.id = id
+            this.name = name
+            this.presence = presence
+        }
 
         if (id==0) {
             mSaveGuest.value = mGuestRepository.save(guest)
